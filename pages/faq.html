@@ -1,0 +1,91 @@
+<style>
+  .section-title { margin-bottom: 24px; }
+  .card-custom { margin-bottom: 24px; }
+  details summary {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 12px 0;
+  }
+  details p {
+    margin-top: 8px;
+    color: var(--color-text-muted);
+  }
+  .grid-2col {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+  }
+  .blog-item h3 {
+    margin: 0 0 8px 0;
+  }
+  .blog-item p {
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+  }
+  .blog-item a {
+    font-weight: 700;
+  }
+</style>
+
+<header>
+  <h1 class="fredoka" style="font-size: 40px; margin-bottom: 8px;">Resources & Inspiration</h1>
+  <p style="color:var(--color-text-muted); margin-bottom: 40px;">Answers, stories, and ideas to fuel your focus.</p>
+</header>
+
+<!-- FAQs -->
+<section class="card-custom">
+  <h2 class="fredoka section-title">❓ Frequently Asked Questions</h2>
+  <div class="card" style="border-left: 8px solid var(--color-purple);">
+    <details>
+      <summary>What is FocusFlow?</summary>
+      <p>FocusFlow is a joyful productivity companion that combines the Pomodoro technique, task management, and gamification to help you stay focused and motivated.</p>
+    </details>
+    <details>
+      <summary>How does the timer work?</summary>
+      <p>Go to the Focus Lab, set your work and break durations, and hit start. When a session ends, you'll get a notification and earn points.</p>
+    </details>
+    <details>
+      <summary>Is my data safe?</summary>
+      <p>All data is stored only in your browser's localStorage. No information is sent to a server.</p>
+    </details>
+    <details>
+      <summary>Can I use it on my phone?</summary>
+      <p>Absolutely! The layout adapts to small screens, and the sidebar collapses into a hamburger menu.</p>
+    </details>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section class="card-custom">
+  <h2 class="fredoka section-title">💬 What People Say</h2>
+  <div class="grid-2col">
+    <div class="card" style="border-left: 6px solid var(--color-primary); background: var(--color-surface-2);">
+      <p style="font-style: italic;">“FocusFlow turned my chaotic study routine into a smooth, focused flow. The little rewards keep me hooked!”</p>
+      <p style="font-weight: 800; color: var(--color-primary);">— Priya, Student</p>
+    </div>
+    <div class="card" style="border-left: 6px solid var(--color-primary); background: var(--color-surface-2);">
+      <p style="font-style: italic;">“The playful design makes productivity feel like a game. I actually look forward to my focus sessions!”</p>
+      <p style="font-weight: 800; color: var(--color-primary);">— Aryan, Designer</p>
+    </div>
+    <div class="card" style="border-left: 6px solid var(--color-primary); background: var(--color-surface-2);">
+      <p style="font-style: italic;">“The ambient backgrounds and chime are perfect. I use FocusFlow daily for coding marathons.”</p>
+      <p style="font-weight: 800; color: var(--color-primary);">— Meera, Developer</p>
+    </div>
+  </div>
+</section>
+
+<!-- Blog -->
+<section class="card-custom">
+  <h2 class="fredoka section-title">📝 Tips & Stories</h2>
+  <div class="grid-2col">
+    <div class="card blog-item" style="border-left: 6px solid var(--color-accent);">
+      <h3 class="fredoka">Why should you study with Pomodoro Timer for Deep Work</h3>
+      <p>Unlock the full potential of your timer with these advanced techniques.</p>
+      <a href="https://www.wizeprep.com/blog/why-you-should-study-with-a-pomodoro-timer" target="_blank" rel="noopener">Read more →</a>
+    </div>
+    
+    
+  </div>
+</section>
