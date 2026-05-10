@@ -1,0 +1,135 @@
+<style>
+  .contact-section { margin-bottom: 48px; }
+  .contact-card { border-left: 8px solid var(--color-purple); display: flex; flex-direction: column; gap: 24px; }
+  .map-card { border-left: 8px solid var(--color-accent); overflow: hidden; padding: 0 !important; }
+  .map-card iframe { display: block; width: 100%; height: 300px; border: none; }
+</style>
+
+<header>
+  <h1 class="fredoka" style="font-size: 40px; margin-bottom: 8px;">Contact Us</h1>
+  <p style="color:var(--color-text-muted); margin-bottom: 48px;">
+    We’d love to hear from you. Your message will be sent to the author.
+  </p>
+</header>
+
+<!-- Contact Form (simplified) -->
+<div class="contact-section">
+  <!-- Replace the action URL with your own Formspree endpoint to really send emails -->
+  <form id="contact-form"
+        action="https://formspree.io/f/xnjwoqog"  
+        method="POST"
+        novalidate>
+    <fieldset class="contact-card card" style="border-left-color: var(--color-purple);">
+      <legend style="font-family:'Fredoka One',cursive; font-size:1.3rem; padding-bottom:0.8rem; margin-bottom:1.2rem; width:100%; border-bottom:2px solid var(--color-border); color:var(--color-text);">📬 Send a Message</legend>
+
+      <div class="field-group">
+        <label for="contact-email">Email Address *</label>
+        <input type="email" id="contact-email" name="email" required placeholder="you@example.com">
+        <span class="error-msg"></span>
+      </div>
+
+      <div class="field-group">
+        <label for="contact-subject">Subject</label>
+        <select id="contact-subject" name="subject" required>
+          <option value="">-- Choose --</option>
+          <option value="feedback">Feedback</option>
+          <option value="support">Support</option>
+          <option value="feature">Feature Request</option>
+          <option value="other">Other</option>
+        </select>
+        <span class="error-msg"></span>
+      </div>
+
+      <div class="field-group">
+        <label for="contact-message">Your Message *</label>
+        <textarea id="contact-message" name="message" required placeholder="How can we help you?" rows="5" minlength="10"></textarea>
+        <span class="error-msg"></span>
+      </div>
+
+      <div class="field-group">
+        <label>
+          <input type="checkbox" required> I agree to the privacy policy
+        </label>
+        <span class="error-msg"></span>
+      </div>
+
+      <button type="submit" class="btn-primary" style="align-self: flex-start;">
+        <i class="ph ph-paper-plane-tilt"></i> Send Message
+      </button>
+    </fieldset>
+  </form>
+</div>
+
+<!-- Location & Map -->
+<div class="contact-section">
+  <article class="card map-card" style="border-left: 8px solid var(--color-accent); padding: 0 !important; overflow: hidden;">
+    <div style="padding: 24px 24px 0;">
+      <h2 class="fredoka" style="margin-bottom: 8px;">📍 Find Us</h2>
+      <p style="color:var(--color-text-muted); margin-bottom: 16px;">
+        Amrita Vishwa Vidyapeetham, Amritapuri Campus<br>
+        Clappana P.O., Kollam – 690525, Kerala, India
+      </p>
+    </div>
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3938.244173584!2d76.49183!3d9.09398!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zOcKwMDUnMzguMyJOIDc2wrAyOSczMC42IkU!5e0!3m2!1sen!2sin!4v1690000000000"
+      width="100%" height="300" style="border:0; display:block;"
+      allowfullscreen="" loading="lazy"
+      title="Amrita Vishwa Vidyapeetham, Amritapuri Campus, Kollam">
+    </iframe>
+  </article>
+</div>
+
+<script>
+  (function() {
+    const form = document.getElementById('contact-form');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      let allValid = true;
+
+      const email = document.getElementById('contact-email');
+      const subject = document.getElementById('contact-subject');
+      const message = document.getElementById('contact-message');
+      const privacy = form.querySelector('input[type="checkbox"]');
+
+      if (!validateField(email, { required: true })) allValid = false;
+      if (!validateField(subject, { required: true })) allValid = false;
+      if (!validateField(message, { required: true, minLength: 10 })) allValid = false;
+
+      const privacyError = privacy.parentElement.parentElement.querySelector('.error-msg');
+      if (!privacy.checked) {
+        if (privacyError) {
+          privacyError.textContent = 'You must agree to the privacy policy.';
+          privacyError.classList.add('visible');
+        }
+        allValid = false;
+      } else {
+        if (privacyError) privacyError.classList.remove('visible');
+      }
+
+      if (!allValid) return;
+
+            if (!allValid) return;
+
+      // Submit the form to Formspree after validation
+      form.submit();
+      // Optionally, show a success message before the page redirects
+      alert('✅ Thank you! Your message has been sent.');
+      // Clear the form (optional, as Formspree will redirect or show a success page)
+      form.reset();
+      form.querySelectorAll('.error-msg').forEach(el => el.classList.remove('visible'));
+    });
+
+    // Real‑time validation on blur
+    document.getElementById('contact-email').addEventListener('blur', function() {
+      validateField(this, { required: true,pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+        patternMessage: 'Please enter a valid email address.' });
+    });
+    document.getElementById('contact-subject').addEventListener('change', function() {
+      validateField(this, { required: true });
+    });
+    document.getElementById('contact-message').addEventListener('blur', function() {
+      validateField(this, { required: true, minLength: 10 });
+    });
+  })();
+</script>
