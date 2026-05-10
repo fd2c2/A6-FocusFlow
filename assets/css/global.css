@@ -1,0 +1,898 @@
+/* ── GOOGLE FONTS IMPORT ── */
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap');
+
+/* ── CSS VARIABLES (Light Mode) ── */
+:root {
+    --color-bg: #FFF8F0;
+    --color-surface: #FFFFFF;
+    --color-surface-2: #FFF1E6;
+    --color-primary: #FF6B6B;
+    --color-secondary: #FFD93D;
+    --color-accent: #6BCB77;
+    --color-purple: #A78BFA;
+    --color-blue: #74C0FC;
+    --color-text: #2D2D2D;
+    --color-text-muted: #888888;
+    --color-border: #E8D5C4;
+    --shadow-offset: 4px;
+}
+
+/* ── CSS VARIABLES (Dark Mode) ── */
+html.dark {
+    --color-bg: #1E1B2E;
+    --color-surface: #2A2640;
+    --color-surface-2: #332F4A;
+    --color-text: #F0EAD6;
+    --color-text-muted: #9B97B2;
+    --color-border: #3D3860;
+}
+
+/* ── BASE SCALE ── */
+html {
+    font-size: 17px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: 'Nunito', sans-serif;
+    line-height: 1.7;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+.fredoka {
+    font-family: 'Fredoka One', cursive;
+    letter-spacing: 0.5px;
+}
+
+p {
+    margin-bottom: 1.2rem;
+}
+
+small {
+    font-size: 13px;
+    color: var(--color-text-muted);
+}
+
+/* ── LAYOUT UTILITIES ── */
+#app {
+    margin-left: 72px;
+    transition: margin-left 0.25s ease;
+    width: calc(100% - 72px);
+    min-height: 100vh;
+}
+
+#sidebar:hover+#app,
+#sidebar.expanded+#app {
+    margin-left: 240px;
+    width: calc(100% - 240px);
+}
+
+.page {
+    display: none;
+    padding: 48px 5%;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.page.active {
+    display: block;
+    animation: pop 0.25s ease forwards;
+}
+
+/* ── SIDEBAR ── */
+#sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 72px;
+    background: var(--color-surface);
+    border-right: 2.5px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    padding: 24px 0;
+    transition: width 0.25s ease;
+    overflow: hidden;
+    z-index: 200;
+}
+
+#sidebar:hover,
+#sidebar.expanded {
+    width: 240px;
+}
+
+.sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0 24px 28px;
+    border-bottom: 2px solid var(--color-border);
+    margin-bottom: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.sidebar-logo .logo-icon {
+    font-size: 28px;
+    flex-shrink: 0;
+}
+
+.sidebar-logo .logo-text {
+    font-family: 'Fredoka One', cursive;
+    font-size: 20px;
+    color: var(--color-primary);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+#sidebar:hover .logo-text,
+#sidebar.expanded .logo-text {
+    opacity: 1;
+}
+
+.sidebar-nav {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 0 12px;
+}
+
+.sidebar-btn {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 12px;
+    border-radius: 16px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    transition: background 0.15s ease, transform 0.1s ease;
+    width: 100%;
+    text-align: left;
+    text-decoration: none;
+}
+
+.sidebar-btn:hover {
+    background: var(--color-surface-2);
+}
+
+.sidebar-btn.active {
+    background: var(--color-primary);
+    box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.15);
+}
+
+.sidebar-btn .btn-icon {
+    font-size: 28px;
+    flex-shrink: 0;
+    color: var(--color-text-muted);
+    transition: color 0.15s ease;
+}
+
+.sidebar-btn.active .btn-icon {
+    color: white;
+}
+
+.sidebar-btn .btn-label {
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+#sidebar:hover .btn-label,
+#sidebar.expanded .btn-label {
+    opacity: 1;
+}
+
+.sidebar-btn.active .btn-label {
+    color: white;
+}
+
+.sidebar-bottom {
+    padding: 14px 12px;
+    border-top: 2px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+#dark-mode-btn {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 12px;
+    border-radius: 16px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    width: 100%;
+}
+
+#dark-mode-btn .btn-icon {
+    font-size: 28px;
+    color: var(--color-text);
+}
+
+#dark-mode-btn .btn-label {
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--color-text);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+#sidebar:hover #dark-mode-btn .btn-label,
+#sidebar.expanded #dark-mode-btn .btn-label {
+    opacity: 1;
+}
+
+/* ── CARD COMPONENT ── */
+.card {
+    background: var(--color-surface);
+    border: 2.5px solid var(--color-border);
+    border-radius: 24px;
+    padding: 28px;
+    box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--color-border);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* ── BUTTON COMPONENTS ── */
+.btn-primary {
+    background: var(--color-primary);
+    color: #FFFFFF;
+    border: 2.5px solid #E05555;
+    border-radius: 50px;
+    padding: 14px 34px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: var(--shadow-offset) var(--shadow-offset) 0px #E05555;
+    transition: all 0.1s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-primary:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px #E05555;
+}
+
+.btn-secondary {
+    background: var(--color-surface-2);
+    color: var(--color-text);
+    border: 2.5px solid var(--color-border);
+    border-radius: 50px;
+    padding: 14px 34px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--color-border);
+}
+
+.btn-ghost {
+    background: transparent;
+    border: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+/* ── BADGE COMPONENTS ── */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 14px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 14px;
+    border: 2px solid transparent;
+}
+
+.badge-high {
+    background: #FFE5E5;
+    color: #C0392B;
+    border-color: #F5B7B1;
+}
+
+.badge-medium {
+    background: #FFF9E5;
+    color: #B7770D;
+    border-color: #FAD7A0;
+}
+
+.badge-low {
+    background: #E5F9ED;
+    color: #1E8449;
+    border-color: #A9DFBF;
+}
+
+/* ── FORM ELEMENTS ── */
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 16px 24px;
+    border: 2.5px solid var(--color-border);
+    border-radius: 16px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 17px;
+    background: var(--color-surface);
+    color: var(--color-text);
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+input:focus {
+    border-color: var(--color-primary);
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 52px;
+    height: 28px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--color-border);
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked+.slider {
+    background-color: var(--color-primary);
+}
+
+input:checked+.slider:before {
+    transform: translateX(24px);
+}
+
+/* ── ANIMATIONS & KEYFRAMES ── */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes pop {
+    0% {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes wiggle {
+
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+
+    25% {
+        transform: rotate(-5deg);
+    }
+
+    75% {
+        transform: rotate(5deg);
+    }
+}
+
+.float {
+    animation: float 3s ease-in-out infinite;
+}
+
+.wiggle:hover {
+    animation: wiggle 0.3s ease;
+}
+
+/* ── UTILITY CLASSES ── */
+.empty-state {
+    text-align: center;
+    padding: 72px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    color: var(--color-text-muted);
+}
+
+.empty-state i {
+    font-size: 72px;
+    margin-bottom: 14px;
+}
+
+.toast {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    background: #2D2D2D;
+    color: #FFFFFF;
+    padding: 14px 28px;
+    border-radius: 999px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+    z-index: 3000;
+}
+
+.toast.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* ── MOBILE TOPBAR & BACKDROP ── */
+#mobile-topbar {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    background: var(--color-surface);
+    border-bottom: 2.5px solid var(--color-border);
+    align-items: center;
+    padding: 0 24px;
+    gap: 20px;
+    z-index: 300;
+}
+
+#hamburger-btn {
+    background: none;
+    border: 2.5px solid var(--color-border);
+    border-radius: 12px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 24px;
+    color: var(--color-text);
+}
+
+#mobile-topbar .logo-text {
+    font-family: 'Fredoka One', cursive;
+    font-size: 20px;
+    color: var(--color-primary);
+}
+
+#sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 199;
+}
+
+#sidebar-backdrop.visible {
+    display: block;
+}
+
+/* ── CONFETTI ── */
+.confetti-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    overflow: hidden;
+}
+
+.confetti-piece {
+    position: absolute;
+    top: -20px;
+    width: 10px;
+    height: 14px;
+    border-radius: 3px;
+    animation: confetti-fall linear forwards;
+}
+
+@keyframes confetti-fall {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+
+    80% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(110vh) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+/* ── MOTIVATIONAL POPUP ── */
+#motivation-popup {
+    position: fixed;
+    bottom: 36px;
+    right: 36px;
+    background: var(--color-surface);
+    border: 2.5px solid var(--color-border);
+    border-radius: 24px;
+    padding: 24px 28px;
+    box-shadow: 4px 4px 0px var(--color-border);
+    max-width: 320px;
+    z-index: 500;
+    transform: translateY(120%);
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+#motivation-popup.show {
+    transform: translateY(0);
+}
+
+#motivation-popup .popup-emoji {
+    font-size: 40px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+#motivation-popup .popup-text {
+    font-family: 'Fredoka One', cursive;
+    font-size: 18px;
+    color: var(--color-text);
+    line-height: 1.4;
+}
+
+#motivation-popup .popup-close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--color-text-muted);
+}
+
+/* ── GOAL BARS ── */
+.goal-bar-track {
+    width: 100%;
+    height: 16px;
+    background: var(--color-surface-2);
+    border-radius: 999px;
+    border: 2px solid var(--color-border);
+    overflow: hidden;
+    margin-top: 8px;
+}
+
+.goal-bar-fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ── OVERDUE TASK ── */
+.task-overdue {
+    border-left: 5px solid var(--color-primary) !important;
+    background: rgba(255, 107, 107, 0.06) !important;
+}
+
+.overdue-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-left: 8px;
+}
+
+/* ── SHORTCUT HINT ── */
+.shortcut-hint {
+    display: inline-block;
+    font-family: 'Nunito', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    background: var(--color-surface-2);
+    border: 1.5px solid var(--color-border);
+    border-radius: 6px;
+    padding: 2px 8px;
+    color: var(--color-text-muted);
+    margin-left: 8px;
+}
+
+/* ── FORM VALIDATION ── */
+form .field-group {
+    margin-bottom: 1.2rem;
+}
+
+label {
+    font-weight: 700;
+    display: block;
+    margin-bottom: 0.3rem;
+}
+
+.input-error {
+    border-color: var(--color-primary) !important;
+    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.15) !important;
+}
+
+.error-msg {
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    color: var(--color-primary);
+    font-weight: 700;
+    margin-top: 6px;
+    display: none;
+}
+
+.error-msg.visible {
+    display: block;
+}
+
+/* ── TABLES ── */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+}
+
+caption {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    caption-side: top;
+}
+
+th {
+    background: var(--color-surface-2);
+    text-align: left;
+    padding: 0.5rem;
+    border: 1px solid var(--color-border);
+}
+
+td {
+    padding: 0.5rem;
+    border: 1px solid var(--color-border);
+}
+
+/* ── LINK STYLING ── */
+a {
+    color: var(--color-primary);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+a:visited {
+    color: var(--color-purple);
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+a:active {
+    color: var(--color-accent);
+}
+
+/* ── LISTS ── */
+ul,
+ol {
+    margin: 1rem 0;
+    padding-left: 2rem;
+}
+
+li {
+    margin-bottom: 0.5rem;
+}
+
+/* ── DRAG & DROP ── */
+.task-row.dragging {
+    opacity: 0.6;
+}
+
+.draggable {
+    cursor: grab;
+}
+
+.draggable:active {
+    cursor: grabbing;
+}
+
+/* ── GRADIENTS & FILTERS ── */
+.gradient-bg {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    color: white;
+}
+
+.blur-filter:hover {
+    filter: blur(2px);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+    #sidebar {
+        width: 0;
+        border-right: none;
+        box-shadow: none;
+    }
+
+    #sidebar.expanded {
+        width: 260px;
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
+    }
+
+    #app {
+        margin-left: 0 !important;
+        padding-top: 80px;
+        width: 100% !important;
+    }
+
+    #mobile-topbar {
+        display: flex !important;
+    }
+}
+
+/* ── SIDEBAR FINAL FIX: perfect icon visibility, logo beside icon, bottom button reachable ── */
+
+/* 1. Allow the sidebar to scroll if the content is taller than the screen */
+#sidebar {
+    overflow-y: auto;
+    /* vertical scrollbar appears only when needed */
+    overflow-x: hidden;
+    /* keep horizontal hidden */
+    padding-bottom: 8px;
+}
+
+/* 2. Keep the sidebar at 72px collapsed, expand only on hover */
+#sidebar:hover,
+#sidebar.expanded {
+    width: 240px;
+}
+
+/* 3. Logo: icon and text side‑by‑side */
+.sidebar-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* centres the icon when collapsed */
+    padding: 20px 0;
+    gap: 10px;
+}
+
+.sidebar-logo .logo-icon {
+    font-size: 28px;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+/* 4. Hide the logo text completely when collapsed (no space taken) */
+.sidebar-logo .logo-text {
+    display: none;
+    font-family: 'Fredoka One', cursive;
+    font-size: 20px;
+    color: var(--color-primary);
+    white-space: nowrap;
+}
+
+/* 5. Show logo text when expanded */
+#sidebar:hover .sidebar-logo .logo-text,
+#sidebar.expanded .sidebar-logo .logo-text {
+    display: block;
+}
+
+/* 6. Navigation buttons – keep icons centred, hide labels when collapsed */
+.sidebar-btn .btn-label,
+#dark-mode-btn .btn-label {
+    display: none;
+}
+
+#sidebar:hover .btn-label,
+#sidebar.expanded .btn-label {
+    display: inline;
+    opacity: 1;
+}
+
+/* ── MAKE EVERYTHING FIT WITHOUT SCROLLING ── */
+.sidebar-nav {
+    gap: 2px;
+    /* was 5px – saves ~27px */
+}
+
+.sidebar-btn {
+    padding: 10px 10px;
+    /* was 14px 12px – saves ~4px per button */
+}
+
+.sidebar-bottom {
+    padding: 10px 12px;
+    /* slightly tighter */
+}
+
+.sidebar-logo {
+    padding: 14px 0 16px;
+    /* was 20px 0 – saves ~10px */
+}
+
+/* Keep overflow auto as a safety net for very small screens */
+#sidebar {
+    overflow-y: auto;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+fieldset {
+    border: none;
+    /* remove default fieldset border – the card provides the border */
+    padding: 0;
+    margin: 0;
+}
+
+legend {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.3rem;
+    color: var(--color-text);
+    padding: 0 0 0.8rem 0;
+    /* space below the title */
+    margin-bottom: 1.2rem;
+    /* gap between title and content */
+    width: 100%;
+    border-bottom: 2px solid var(--color-border);
+    /* subtle separator line */
+}
