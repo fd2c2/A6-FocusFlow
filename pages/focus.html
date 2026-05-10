@@ -1,0 +1,709 @@
+<script>
+  if (window.top === window.self && !window.FF_SHELL_LOADED) {
+    window.location.href = '../index.html?redirect=' + window.location.pathname.split('/').pop();
+  }
+</script>
+<style>
+  #page-focus.active {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    box-sizing: border-box;
+  }
+
+  body.dw-active #page-focus.active,
+  body.fullscreen-active #page-focus.active {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  /* Main centering wrapper */
+  .focus-container {
+    width: 100%;
+    max-width: 1100px;
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+    justify-content: center;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-wrap: wrap;
+  }
+
+  /* Fullscreen Mode Styling */
+  body.fullscreen-active .focus-container {
+    position: fixed;
+    inset: 0;
+    max-width: none;
+    background: var(--color-bg);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 20px;
+  }
+
+  body.fullscreen-active .timer-card {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    max-width: 90vw;
+  }
+
+  body.fullscreen-active .timer-display {
+    font-size: clamp(80px, 20vw, 250px);
+  }
+
+  body.fullscreen-active .focus-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0.1;
+    transition: opacity 0.3s, transform 0.3s;
+    width: auto;
+    flex-direction: row;
+    gap: 12px;
+    max-width: 95vw;
+    overflow-x: auto;
+    background: var(--color-surface);
+    padding: 10px;
+    border-radius: 24px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  body.fullscreen-active .focus-controls:hover {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-5px);
+  }
+
+  body.fullscreen-active .control-group {
+    padding: 10px 15px;
+    border: 1px solid var(--color-border);
+    box-shadow: none;
+    min-width: 150px;
+  }
+
+  body.fullscreen-active .control-title {
+    display: none;
+  }
+
+  /* Timer card styling */
+  .timer-card {
+    text-align: center;
+    padding: 40px 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    width: 100%;
+    max-width: 480px;
+    background: var(--color-surface);
+    border: 3.5px solid var(--color-border);
+    border-radius: 40px;
+    box-shadow: 10px 10px 0px var(--color-border);
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  .timer-display {
+    font-size: clamp(60px, 15vw, 110px);
+    font-family: 'Fredoka One', cursive;
+    color: var(--color-primary);
+    line-height: 1;
+    margin: 5px 0;
+  }
+
+  /* Mode Switcher */
+  .mode-switcher {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .mode-icon-btn {
+    width: 56px;
+    height: 56px;
+    border-radius: 18px;
+    border: 2.5px solid var(--color-border);
+    background: var(--color-surface-2);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .mode-icon-btn.active {
+    background: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+  }
+
+  /* Control sidebar */
+  .focus-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 340px;
+  }
+
+  .control-group {
+    background: var(--color-surface);
+    border: 2.5px solid var(--color-border);
+    border-radius: 28px;
+    padding: 20px;
+    box-shadow: 6px 6px 0px var(--color-border);
+  }
+
+  .control-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 15px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--color-text);
+  }
+
+  .icon-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .icon-action-btn {
+    padding: 14px 10px;
+    border-radius: 18px;
+    border: 2px solid var(--color-border);
+    background: var(--color-surface-2);
+    color: var(--color-text);
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+  }
+
+  .icon-action-btn i {
+    font-size: 22px;
+  }
+
+  /* Deep Work Overlay */
+  #dw-container {
+    display: none;
+    position: fixed;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: #000 !important;
+    z-index: 10000 !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    padding: 20px;
+    margin: 0 !important;
+    overflow: hidden;
+  }
+
+  #dw-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.7;
+    z-index: 1;
+  }
+
+  #dw-timer-slot,
+  #dw-quote,
+  #dw-deep-toggle-btn {
+    position: relative;
+    z-index: 2;
+  }
+
+  .dw-active #focus-timer-card {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    width: 100% !important;
+    max-width: 95vw !important;
+    padding: 0 !important;
+    animation: dwBreathe 10s ease-in-out infinite;
+  }
+
+  @keyframes dwBreathe {
+    0%, 100% { opacity: 0.85; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.02); }
+  }
+
+  .dw-active .timer-display {
+    font-size: clamp(120px, 25vw, 350px);
+    color: white !important;
+    text-shadow: 0 0 40px rgba(255, 255, 255, 0.2);
+  }
+
+  .dw-active .mode-switcher,
+  .dw-active .focus-controls,
+  .dw-active #cycle-text,
+  .dw-active #cycle-dots-row,
+  .dw-active #timer-status,
+  .dw-active #timer-toggle-btn {
+    display: none !important;
+  }
+
+  #dw-deep-toggle-btn {
+    margin-top: 30px;
+    padding: 14px 32px;
+    font-size: 20px;
+    font-weight: 800;
+    border-radius: 60px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(12px);
+    border: 1.5px solid rgba(255,255,255,0.3);
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Fredoka One', cursive;
+  }
+
+  #dw-deep-toggle-btn:hover {
+    background: rgba(255,255,255,0.3);
+    transform: scale(1.02);
+  }
+
+  #dw-quote {
+    color: rgba(255, 255, 255, 0.4);
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(16px, 4vw, 24px);
+    margin-top: 40px;
+    max-width: 800px;
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  /* Responsive Fixes */
+  @media (max-width: 768px) {
+    .focus-container { gap: 24px; }
+    .timer-card { padding: 30px 20px; }
+    .timer-display { font-size: 70px; }
+    .focus-controls { max-width: 100%; }
+    #dw-quote { margin-top: 20px; font-size: 16px; }
+  }
+
+  @media (max-height: 600px) {
+    #page-focus.active { padding-top: 20px; }
+    .timer-card { padding: 20px; gap: 15px; }
+    .timer-display { font-size: 60px; }
+    #dw-quote { display: none; }
+  }
+
+  /* Hiding Sidebar in Special Modes */
+  body.fullscreen-active #sidebar,
+  body.dw-active #sidebar,
+  body.fullscreen-active #mobile-topbar,
+  body.dw-active #mobile-topbar {
+    display: none !important;
+  }
+
+  body.fullscreen-active #app,
+  body.dw-active #app {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+
+  body.fullscreen-active,
+  body.dw-active {
+    overflow: hidden !important;
+  }
+
+  #dw-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    opacity: 0.6;
+    z-index: 1;
+  }
+</style>
+
+<div class="focus-container" id="main-focus-container">
+  <!-- LEFT: TIMER CARD -->
+  <div class="timer-card" id="focus-timer-card">
+    <div id="timer-status" class="fredoka" style="font-size:16px; color:var(--color-text-muted);">
+      Ready to get in the zone?
+    </div>
+    <div id="timer-display" class="timer-display">25:00</div>
+    <div class="mode-switcher">
+      <button class="mode-icon-btn active" id="btn-mode-focus"
+        onclick="if(window.stopChimeLoop) stopChimeLoop(); switchMode('focus')" data-label="Focus">
+        <i class="ph ph-lightning"></i>
+      </button>
+      <button class="mode-icon-btn" id="btn-mode-short"
+        onclick="if(window.stopChimeLoop) stopChimeLoop(); switchMode('short')" data-label="Short">
+        <i class="ph ph-coffee"></i>
+      </button>
+      <button class="mode-icon-btn" id="btn-mode-long"
+        onclick="if(window.stopChimeLoop) stopChimeLoop(); switchMode('long')" data-label="Long">
+        <i class="ph ph-leaf"></i>
+      </button>
+    </div>
+    <div id="cycle-dots-row" style="display:flex; gap:10px; justify-content:center;"></div>
+    <div id="cycle-text" style="font-weight:800; color:var(--color-text-muted); font-size:13px;">
+      Session 1 of 4
+    </div>
+    <button id="timer-toggle-btn" class="btn-primary" onclick="focusToggleTimer()"
+      style="width: 100%; max-width: 240px; justify-content: center; font-size: 18px; padding: 16px;">
+      <i class="ph ph-play-fill"></i> Start Focus
+    </button>
+  </div>
+
+  <!-- RIGHT: CONTROLS & SETTINGS -->
+  <div class="focus-controls">
+    <div class="control-group">
+      <div class="control-title"><i class="ph ph-headphones"></i> Background Ambient</div>
+      <select id="sound-select" onchange="changeSound()"
+        style="width:100%; padding:10px 14px; border:2.5px solid var(--color-border); border-radius:14px; background:var(--color-surface); font-family:'Nunito',sans-serif; font-weight:700; color:var(--color-text);">
+        <option value="">-- None --</option>
+        <option value="assets/media/flute.mp3">🎵 Flute Serenity</option>
+        <option value="assets/media/meditation.mp3">🧘 Meditation Bliss</option>
+        <option value="assets/media/nature.mp3">🌲 Nature's Embrace </option>
+        <option value="assets/media/peace.mp3">☮️ Peaceful Horizon</option>
+        <option value="assets/media/relax.mp3">💆‍♂️ Calm Mind</option>
+      </select>
+      <div id="audio-player" style="display:none; margin-top:12px;">
+        <div class="music-box">
+          <button id="music-play-btn" class="music-btn" onclick="toggleMusicPlay()"><i class="ph ph-play"></i></button>
+          <span id="music-track-name" class="music-track-name">--</span>
+          <button id="music-volume-btn" class="volume-btn" onclick="toggleMute()"><i class="ph ph-speaker-high"></i></button>
+        </div>
+        <audio id="focus-audio" loop preload="auto" style="display:none;">
+          <source id="audio-source" src="" type="audio/mpeg">
+        </audio>
+      </div>
+    </div>
+    <div class="control-group">
+      <div class="control-title"><i class="ph ph-rocket-launch"></i> Active Controls</div>
+      <div class="icon-grid">
+        <button class="icon-action-btn" onclick="focusToggleFullScreen()" id="fs-btn">
+          <i class="ph ph-arrows-out"></i><span>Full Screen</span>
+        </button>
+        <button class="icon-action-btn" onclick="focusEnterDeepWork()"
+          style="border-color: var(--color-primary); color: var(--color-primary);">
+          <i class="ph ph-brain"></i><span>Deep Work</span>
+        </button>
+      </div>
+    </div>
+    <div class="control-group">
+      <div class="control-title"><i class="ph ph-sliders-horizontal"></i> Configuration</div>
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: grid; grid-template-columns: 1fr 70px; align-items: center; gap: 10px;">
+          <span style="font-size: 13px; font-weight: 700;">Focus (min)</span>
+          <input type="number" id="inp-work" value="25" class="small-input" style="padding:6px;">
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 70px; align-items: center; gap: 10px;">
+          <span style="font-size: 13px; font-weight: 700;">Break (min)</span>
+          <input type="number" id="inp-short" value="5" class="small-input" style="padding:6px;">
+        </div>
+        <button class="btn-primary" onclick="focusSaveTimerSettings()"
+          style="width: 100%; padding: 10px; font-size: 13px; background: var(--color-surface-2); color: var(--color-text); border-color: var(--color-border); box-shadow: 3px 3px 0px var(--color-border);">
+          Apply Settings
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DEEP WORK OVERLAY -->
+<div id="dw-container">
+  <video id="dw-video" loop muted playsinline>
+    <source src="assets/media/video.mp4" type="video/mp4">
+  </video>
+  <div id="dw-timer-slot" style="width:100%; display:flex; justify-content:center;"></div>
+  <p id="dw-quote"></p>
+  <button id="dw-deep-toggle-btn">⏸ Pause</button>
+  <button onclick="focusExitDeepWork()"
+    style="position:fixed; bottom:40px; right:40px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:white; font-size:13px; font-weight:700; cursor:pointer; padding:12px 24px; border-radius:14px; backdrop-filter:blur(8px); z-index: 10;">
+    Exit Deep Work
+  </button>
+</div>
+
+<script>
+  (function () {
+    let focusTimerId = null;
+    let focusTimeLeft = 25 * 60;
+    let focusCurrentMode = 'focus';
+    let focusSessionsDone = 0;
+    let focusDeepWorkActive = false;
+
+    const audio = document.getElementById('focus-audio');
+    const soundSelect = document.getElementById('sound-select');
+    const audioPlayerDiv = document.getElementById('audio-player');
+    const playBtn = document.getElementById('music-play-btn');
+    const trackNameEl = document.getElementById('music-track-name');
+    const volumeBtn = document.getElementById('music-volume-btn');
+
+    // Init values
+    const savedWork = getItem('ff_timer_work');
+    if (savedWork) document.getElementById('inp-work').value = savedWork;
+    const savedBreak = getItem('ff_timer_break');
+    if (savedBreak) document.getElementById('inp-short').value = savedBreak;
+
+    window.switchMode = function (mode) {
+      clearInterval(focusTimerId);
+      focusTimerId = null;
+      focusCurrentMode = mode;
+      const work = parseInt(getItem('ff_timer_work')) || 25;
+      const short = parseInt(getItem('ff_timer_break')) || 5;
+      focusTimeLeft = (mode === 'focus' ? work : short) * 60;
+
+      const btn = document.getElementById('timer-toggle-btn');
+      btn.innerHTML = `<i class="ph ph-play-fill"></i> Start ${mode === 'focus' ? 'Focus' : 'Break'}`;
+      document.getElementById('timer-status').textContent = mode === 'focus' ? 'Time to work' : 'Time for a break';
+
+      document.querySelectorAll('.mode-icon-btn').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById('btn-mode-' + mode);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      focusUpdateDisplay();
+      focusRenderDots();
+
+      // Update deep work toggle button if active
+      if (focusDeepWorkActive) updateDeepToggleButton();
+    };
+
+    function focusUpdateDisplay() {
+      const m = Math.floor(focusTimeLeft / 60);
+      const s = focusTimeLeft % 60;
+      const str = m.toString().padStart(2, '0') + ':' + s.toString().padStart(2, '0');
+      document.getElementById('timer-display').textContent = str;
+      if (focusDeepWorkActive || document.fullscreenElement) {
+        document.title = `${str} - FocusFlow`;
+      }
+    }
+
+    window.focusToggleTimer = function () {
+      const btn = document.getElementById('timer-toggle-btn');
+      if (focusTimerId) {
+        clearInterval(focusTimerId);
+        focusTimerId = null;
+        btn.innerHTML = `<i class="ph ph-play-fill"></i> Resume`;
+        if (audio) audio.pause();
+        if (typeof stopChimeLoop === 'function') stopChimeLoop();
+      } else {
+        btn.innerHTML = `<i class="ph ph-pause-fill"></i> Pause`;
+        if (typeof stopChimeLoop === 'function') stopChimeLoop();
+        if (soundSelect.value !== '' && audio) audio.play().catch(() => { });
+        focusTimerId = setInterval(() => {
+          focusTimeLeft--;
+          focusUpdateDisplay();
+          if (focusTimeLeft <= 0) {
+            clearInterval(focusTimerId);
+            focusTimerId = null;
+            if (typeof startChimeLoop === 'function') startChimeLoop();
+            if (focusCurrentMode === 'focus') {
+              if (typeof addPoints === 'function') addPoints(10);
+              if (typeof showMotivationPopup === 'function') showMotivationPopup('session');
+              focusSessionsDone++;
+              const sessions = getItem('ff_sessions') || [];
+              sessions.push({ id: Date.now(), date: getTodayString(), duration: parseInt(getItem('ff_timer_work') || 25) });
+              setItem('ff_sessions', sessions);
+              if (typeof launchConfetti === 'function') launchConfetti();
+            }
+            switchMode(focusCurrentMode === 'focus' ? 'short' : 'focus');
+          }
+        }, 1000);
+      }
+      if (focusDeepWorkActive) updateDeepToggleButton();
+    };
+
+    function updateDeepToggleButton() {
+      const deepBtn = document.getElementById('dw-deep-toggle-btn');
+      if (!deepBtn) return;
+      if (focusTimerId) {
+        deepBtn.innerHTML = '⏸ Pause';
+      } else {
+        deepBtn.innerHTML = '▶ Start';
+      }
+    }
+
+    window.focusSaveTimerSettings = function () {
+      const w = document.getElementById('inp-work').value;
+      const s = document.getElementById('inp-short').value;
+      setItem('ff_timer_work', parseInt(w));
+      setItem('ff_timer_break', parseInt(s));
+      switchMode('focus');
+    };
+
+    window.focusToggleFullScreen = function () {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => console.error(err));
+      } else {
+        document.exitFullscreen();
+      }
+    };
+
+    document.addEventListener('fullscreenchange', () => {
+      if (!document.fullscreenElement) {
+        document.body.classList.remove('fullscreen-active');
+        document.getElementById('fs-btn').innerHTML = '<i class="ph ph-arrows-out"></i><span>Full Screen</span>';
+        if (focusDeepWorkActive) focusExitDeepWork();
+        document.title = "Focus Lab - FocusFlow";
+      } else {
+        document.body.classList.add('fullscreen-active');
+        document.getElementById('fs-btn').innerHTML = '<i class="ph ph-arrows-in"></i><span>Exit Full</span>';
+      }
+    });
+
+    window.focusEnterDeepWork = function () {
+      focusDeepWorkActive = true;
+      document.body.classList.add('dw-active');
+      const container = document.getElementById('dw-container');
+      const slot = document.getElementById('dw-timer-slot');
+      const card = document.getElementById('focus-timer-card');
+      const video = document.getElementById('dw-video');
+
+      const existing = document.body.querySelector(':scope > #dw-container');
+      if (existing && existing !== container) existing.remove();
+      document.body.appendChild(container);
+      if (slot && card) slot.appendChild(card);
+      container.style.display = 'flex';
+
+      // Video handling
+      if (video) {
+        video.muted = true;
+        video.loop = true;
+        video.playsInline = true;
+        video.load();
+        const tryPlay = () => {
+          video.play().catch(e => console.log("Video play blocked", e));
+        };
+        if (video.readyState >= 3) tryPlay();
+        else video.oncanplay = tryPlay;
+      }
+
+      const quotes = [
+        "Focus is a matter of deciding what things you're not going to do.",
+        "Deep Work is the superpower of the 21st century.",
+        "Energy and persistence conquer all things.",
+        "The secret of getting ahead is getting started.",
+        "Your focus determines your reality.",
+        "Work hard in silence, let your success be your noise."
+      ];
+      const qEl = document.getElementById('dw-quote');
+      if (qEl) qEl.textContent = '"' + quotes[Math.floor(Math.random() * quotes.length)] + '"';
+
+      // Add toggle button listener
+      const deepToggle = document.getElementById('dw-deep-toggle-btn');
+      if (deepToggle) {
+        deepToggle.onclick = () => focusToggleTimer();
+        updateDeepToggleButton();
+      }
+
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      }
+    };
+
+    window.focusExitDeepWork = function () {
+      focusDeepWorkActive = false;
+      document.body.classList.remove('dw-active');
+      const container = document.getElementById('dw-container');
+      const card = document.getElementById('focus-timer-card');
+      const mainCont = document.getElementById('main-focus-container');
+      const video = document.getElementById('dw-video');
+      if (video) video.pause();
+      if (mainCont && card) mainCont.prepend(card);
+      if (container) container.style.display = 'none';
+      if (document.fullscreenElement) document.exitFullscreen();
+      document.title = "Focus Lab - FocusFlow";
+    };
+
+    function focusRenderDots() {
+      const row = document.getElementById('cycle-dots-row');
+      if (!row) return;
+      row.innerHTML = '';
+      for (let i = 0; i < 4; i++) {
+        const dot = document.createElement('div');
+        const filled = i < (focusSessionsDone % 4);
+        dot.style.cssText = `width:10px; height:10px; border-radius:50%; background:${filled ? 'var(--color-primary)' : 'var(--color-border)'};`;
+        row.appendChild(dot);
+      }
+    }
+
+    window.toggleMusicPlay = function () {
+      if (!audio) return;
+      audio.paused ? audio.play().catch(() => {}) : audio.pause();
+      updatePlayButton();
+    };
+
+    window.toggleMute = function () {
+      if (!audio) return;
+      audio.muted = !audio.muted;
+      const icon = volumeBtn?.querySelector('i');
+      if (icon) icon.className = audio.muted ? 'ph ph-speaker-x' : 'ph ph-speaker-high';
+    };
+
+    window.changeSound = function () {
+      const source = document.getElementById('audio-source');
+      if (soundSelect.value === '') {
+        if (audio) audio.pause();
+        audioPlayerDiv.style.display = 'none';
+      } else {
+        source.src = soundSelect.value;
+        if (audio) {
+          audio.load();
+          audioPlayerDiv.style.display = 'block';
+          const sel = soundSelect.options[soundSelect.selectedIndex];
+          if (trackNameEl) trackNameEl.textContent = sel ? sel.text : 'Unknown';
+          if (!audio.paused || focusTimerId) audio.play().catch(() => {});
+          updatePlayButton();
+        }
+      }
+    };
+
+    function updatePlayButton() {
+      const icon = playBtn ? playBtn.querySelector('i') : null;
+      if (icon && audio) icon.className = !audio.paused ? 'ph ph-pause' : 'ph ph-play';
+    }
+
+    if (audio) {
+      audio.addEventListener('play', updatePlayButton);
+      audio.addEventListener('pause', updatePlayButton);
+    }
+
+    const page = document.getElementById('page-focus');
+    if (page) {
+      page.addEventListener('pageActivated', () => {
+        focusRenderDots();
+        focusUpdateDisplay();
+      });
+    }
+
+    window.addEventListener('focus', () => {
+      if (typeof stopChimeLoop === 'function') stopChimeLoop();
+    });
+
+    focusRenderDots();
+    focusUpdateDisplay();
+  })();
+</script>
