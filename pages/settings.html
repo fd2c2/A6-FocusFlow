@@ -1,0 +1,400 @@
+<style>
+  .settings-section {
+    margin-bottom: 48px;
+  }
+
+  .settings-card {
+    border-left: 8px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .settings-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .quote-pill {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--color-surface-2);
+    border-radius: 14px;
+    padding: 12px 20px;
+    margin-bottom: 10px;
+    font-size: 15px;
+    border: 1.5px solid var(--color-border);
+  }
+
+  .settings-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  /* Fieldset & Legend – titles inside cards */
+  fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  legend {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.3rem;
+    color: var(--color-text);
+    padding: 0 0 0.8rem 0;
+    margin-bottom: 1.2rem;
+    width: 100%;
+    border-bottom: 2px solid var(--color-border);
+  }
+
+  @media (max-width: 768px) {
+    .settings-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .settings-row {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>
+
+<header>
+  <h1 class="fredoka" style="font-size: 40px; margin-bottom: 8px;">Settings</h1>
+  <p style="color:var(--color-text-muted); margin-bottom: 48px;">Deeply customize your focus experience.</p>
+</header>
+
+<form id="settings-form" novalidate>
+  <!-- APPEARANCE & AUDIO -->
+  <div class="settings-section">
+    <fieldset class="settings-card card" style="border-left-color: var(--color-purple);">
+      <legend>🎨 App Atmosphere</legend>
+      <div class="settings-row">
+        <div>
+          <p style="font-weight:800; margin:0;">Dark Mode</p>
+          <small>Protect your eyes during late-night sessions.</small>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="set-dark-mode" onchange="toggleDarkMode()">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="settings-row">
+        <div>
+          <p style="font-weight:800; margin:0;">Timer Chime</p>
+          <small>Play an ascending chime when a session finishes.</small>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="set-sound-chime" onchange="toggleSound()">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </fieldset>
+  </div>
+
+  <!-- PROFILE -->
+  <div class="settings-section">
+    <fieldset class="settings-card card" style="border-left-color: var(--color-accent);">
+      <legend>👤 Your Profile</legend>
+      <div class="settings-grid">
+        <div class="field-group">
+          <label for="profile-name">Full Name</label>
+          <input type="text" id="profile-name" placeholder="Your name">
+        </div>
+        <div class="field-group">
+          <label for="profile-login-id">Login ID</label>
+          <input type="text" id="profile-login-id" readonly style="opacity:0.7;">
+        </div>
+        <div class="field-group">
+          <label for="profile-dob">Date of Birth</label>
+          <input type="date" id="profile-dob">
+        </div>
+        <div class="field-group">
+          <label for="profile-contact">Contact Number</label>
+          <input type="tel" id="profile-contact" placeholder="+91 98765 43210" list="phone-datalist">
+          <datalist id="phone-datalist">
+            <option value="+1  ">🇺🇸 +1 (US/Canada)</option>
+            <option value="+44 ">🇬🇧 +44 (UK)</option>
+            <option value="+91 ">🇮🇳 +91 (India)</option>
+            <option value="+61 ">🇦🇺 +61 (Australia)</option>
+            <option value="+49 ">🇩🇪 +49 (Germany)</option>
+            <option value="+33 ">🇫🇷 +33 (France)</option>
+            <option value="+81 ">🇯🇵 +81 (Japan)</option>
+            <option value="+55 ">🇧🇷 +55 (Brazil)</option>
+            <option value="+7  ">🇷🇺 +7 (Russia)</option>
+            <option value="+86 ">🇨🇳 +86 (China)</option>
+          </datalist>
+          <span class="error-msg"></span>
+        </div>
+        <div class="field-group">
+          <label for="profile-occupation">Occupation / Student</label>
+          <select id="profile-occupation">
+            <option value="student">Student</option>
+            <option value="working">Working Professional</option>
+            <option value="freelancer">Freelancer</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+      </div>
+      <button type="button" class="btn-primary" onclick="saveProfile()" style="width:fit-content;">Save Profile</button>
+    </fieldset>
+  </div>
+
+  <!-- DAILY TARGETS -->
+  <div class="settings-section">
+    <fieldset class="settings-card card" style="border-left-color: var(--color-accent);">
+      <legend>🎯 Daily Targets</legend>
+      <div class="settings-grid">
+        <div class="field-group">
+          <label for="set-goal-sessions">Focus Sessions per Day</label>
+          <input type="number" id="set-goal-sessions" min="1" max="20" required>
+          <span class="error-msg"></span>
+        </div>
+        <div class="field-group">
+          <label for="set-goal-tasks">Tasks per Day</label>
+          <input type="number" id="set-goal-tasks" min="1" max="50" required>
+          <span class="error-msg"></span>
+        </div>
+      </div>
+      <button type="button" class="btn-primary" onclick="saveGoals()" style="width:fit-content;">Save Daily
+        Targets</button>
+    </fieldset>
+  </div>
+
+  <!-- TIMER DURATION -->
+  <div class="settings-section">
+    <fieldset class="settings-card card" style="border-left-color: var(--color-primary);">
+      <legend>⏱️ Timer Durations (min)</legend>
+      <div class="settings-grid">
+        <div class="field-group">
+          <label for="set-timer-work">Work Session</label>
+          <input type="number" id="set-timer-work" min="1" max="90" required>
+          <span class="error-msg"></span>
+        </div>
+        <div class="field-group">
+          <label for="set-timer-short">Short Break</label>
+          <input type="number" id="set-timer-short" min="1" max="30" required>
+          <span class="error-msg"></span>
+        </div>
+        <div class="field-group">
+          <label for="set-timer-long">Long Break</label>
+          <input type="number" id="set-timer-long" min="1" max="60" required>
+          <span class="error-msg"></span>
+        </div>
+        <div class="field-group">
+          <label for="set-timer-limit">Sessions before Long Break</label>
+          <input type="number" id="set-timer-limit" min="1" max="10" required>
+          <span class="error-msg"></span>
+        </div>
+      </div>
+      <button type="button" class="btn-primary" onclick="saveTimerSettings()" style="width:fit-content;">Save Timer
+        Settings</button>
+    </fieldset>
+  </div>
+
+
+
+  <!-- CUSTOM QUOTES -->
+  <div class="settings-section">
+    <fieldset class="settings-card card" style="border-left-color: var(--color-blue);">
+      <legend>💬 Your Custom Quotes</legend>
+      <p style="color:var(--color-text-muted); margin:0;">These will appear randomly on your Home screen.</p>
+      <div class="field-group">
+        <textarea id="quote-input" placeholder="Type a quote... (max 30 characters)" rows="2" maxlength="30"></textarea>
+        <div style="display:flex; justify-content:space-between; margin-top:8px;">
+          <span class="error-msg"></span>
+          <small id="quote-char-count" style="font-weight:700;">0/30</small>
+        </div>
+        <button type="button" class="btn-primary" onclick="addQuote()" style="margin-top:14px;">Add Quote +</button>
+      </div>
+      <div id="quote-list-meta" style="font-weight:700; font-size:14px; margin: 10px 0;">0 / 10 quotes saved</div>
+      <div id="quote-list"></div>
+    </fieldset>
+  </div>
+
+  <!-- RESET ZONE -->
+  <div class="settings-section">
+    <fieldset class="settings-card card" style="border-color: var(--color-text-muted);">
+      <legend>⚠️ Critical Zone</legend>
+      <div class="settings-row">
+        <p style="margin:0; font-weight:700;">Reset all application data?</p>
+        <button type="button" class="btn-secondary" onclick="resetApp()"
+          style="color:var(--color-primary); border-color:var(--color-primary);">Purge All Data</button>
+      </div>
+    </fieldset>
+  </div>
+  <!-- LOG OUT -->
+  <div class="settings-section">
+    <fieldset class="settings-card card" style="border-left-color: var(--color-primary);">
+      <legend>🚪 Log Out</legend>
+      <div class="settings-row">
+        <p style="margin:0; font-weight:700;">Return to the user selection screen?</p>
+        <button type="button" class="btn-secondary" onclick="logoutUser()"
+          style="color:var(--color-primary); border-color:var(--color-primary);">
+          Log Out
+        </button>
+      </div>
+    </fieldset>
+  </div>
+
+</form>
+
+
+<script>
+  (function () {
+    function initSettings() {
+      document.getElementById('set-dark-mode').checked = (getItem('ff_theme') === 'dark');
+      document.getElementById('set-sound-chime').checked = (getItem('ff_sound_enabled') !== false);
+      document.getElementById('set-goal-sessions').value = getItem('ff_daily_goal_sessions') || 4;
+      document.getElementById('set-goal-tasks').value = getItem('ff_daily_goal_tasks') || 5;
+      document.getElementById('set-timer-work').value = getItem('ff_timer_work') || 25;
+      document.getElementById('set-timer-short').value = getItem('ff_timer_break') || 5;
+      document.getElementById('set-timer-long').value = getItem('ff_timer_long_break') || 15;
+      document.getElementById('set-timer-limit').value = getItem('ff_timer_sessions_long') || 4;
+      const page = document.getElementById('page-settings');
+      if (page) page.addEventListener('pageActivated', () => { initSettings(); loadProfile(); });
+      renderQuotes();
+    }
+
+    function renderQuotes() {
+      const quotes = getItem('ff_custom_quotes') || [];
+      const list = document.getElementById('quote-list');
+      const meta = document.getElementById('quote-list-meta');
+      meta.textContent = `${quotes.length} / 10 quotes saved`;
+      list.innerHTML = quotes.length === 0
+        ? '<p style="color:var(--color-text-muted); margin-top:10px;">No custom quotes yet. Add one! ✏️</p>'
+        : '';
+      quotes.forEach((q, i) => {
+        const div = document.createElement('div');
+        div.className = 'quote-pill';
+        div.innerHTML = `<span>${q}</span><button class="btn-ghost" onclick="deleteQuote(${i})">✕</button>`;
+        list.appendChild(div);
+      });
+    }
+
+    window.toggleSound = function () {
+      setItem('ff_sound_enabled', document.getElementById('set-sound-chime').checked);
+      alert("🔔 Sound setting saved!");
+    };
+
+    window.saveGoals = function () {
+      const s = document.getElementById('set-goal-sessions');
+      const t = document.getElementById('set-goal-tasks');
+      if (validateField(s, { required: true, min: 1, max: 20 }) &
+        validateField(t, { required: true, min: 1, max: 50 })) {
+        setItem('ff_daily_goal_sessions', parseInt(s.value));
+        setItem('ff_daily_goal_tasks', parseInt(t.value));
+        alert("🎯 Targets saved!");
+      }
+    };
+
+    window.saveTimerSettings = function () {
+      const w = document.getElementById('set-timer-work');
+      const s = document.getElementById('set-timer-short');
+      const l = document.getElementById('set-timer-long');
+      const n = document.getElementById('set-timer-limit');
+
+      const wValid = validateField(w, { required: true, min: 1, max: 90 });
+      const sValid = validateField(s, { required: true, min: 1, max: 30 });
+      const lValid = validateField(l, { required: true, min: 1, max: 60 });
+      const nValid = validateField(n, { required: true, min: 1, max: 10 });
+
+      if (wValid && sValid && lValid && nValid) {
+        setItem('ff_timer_work', parseInt(w.value));
+        setItem('ff_timer_break', parseInt(s.value));
+        setItem('ff_timer_long_break', parseInt(l.value));
+        setItem('ff_timer_sessions_long', parseInt(n.value));
+        alert("⏱️ Timer settings saved!");
+      } else {
+        alert("⚠️ Please fill in all timer fields correctly.");
+      }
+    };
+
+    window.addQuote = function () {
+      const inp = document.getElementById('quote-input');
+      if (!validateField(inp, { required: true, minLength: 3, maxLength: 30 })) return;
+      const quotes = getItem('ff_custom_quotes') || [];
+      if (quotes.length >= 10) return alert("Maximum 10 custom quotes reached.");
+      if (quotes.includes(inp.value.trim())) return alert("This quote already exists.");
+      quotes.push(inp.value.trim());
+      setItem('ff_custom_quotes', quotes);
+      inp.value = '';
+      document.getElementById('quote-char-count').textContent = '0/30';
+      renderQuotes();
+      alert("💬 Quote added!");
+    };
+
+    window.deleteQuote = function (idx) {
+      const quotes = getItem('ff_custom_quotes') || [];
+      quotes.splice(idx, 1);
+      setItem('ff_custom_quotes', quotes);
+      renderQuotes();
+    };
+
+    window.resetApp = function () {
+      if (confirm("Reset everything? Your stats and goals will be lost forever.")) {
+        localStorage.clear();
+        location.reload();
+      }
+    };
+
+
+    document.getElementById('quote-input').addEventListener('input', (e) => {
+      const count = e.target.value.length;
+      const el = document.getElementById('quote-char-count');
+      el.textContent = `${count}/30`;
+      el.style.color = count >= 28 ? 'var(--color-primary)' : '';
+    });
+
+    // Real-time validation for number inputs
+    const numberInputs = document.querySelectorAll('input[type="number"]');
+    numberInputs.forEach(inp => {
+      inp.addEventListener('blur', () => {
+        const id = inp.id;
+        if (id === 'set-goal-sessions') validateField(inp, { required: true, min: 1, max: 20 });
+        else if (id === 'set-goal-tasks') validateField(inp, { required: true, min: 1, max: 50 });
+        else if (id === 'set-timer-work') validateField(inp, { required: true, min: 1, max: 90 });
+        else if (id === 'set-timer-short') validateField(inp, { required: true, min: 1, max: 30 });
+        else if (id === 'set-timer-long') validateField(inp, { required: true, min: 1, max: 60 });
+        else if (id === 'set-timer-limit') validateField(inp, { required: true, min: 1, max: 10 });
+      });
+    });
+
+
+
+    const page = document.getElementById('page-settings');
+    if (page) page.addEventListener('pageActivated', initSettings);
+    initSettings();
+  })();
+
+  function loadProfile() {
+    const user = window.getItem('ff_user');
+    if (user) {
+      document.getElementById('profile-name').value = user.name || '';
+      document.getElementById('profile-login-id').value = user.username || '';
+      document.getElementById('profile-dob').value = user.dob || '';
+      document.getElementById('profile-contact').value = user.contact || '';
+      document.getElementById('profile-occupation').value = user.occupation || 'student';
+    }
+  }
+
+  window.saveProfile = function() {
+    const user = window.getItem('ff_user') || {};
+    user.name = document.getElementById('profile-name').value.trim();
+    user.username = document.getElementById('profile-login-id').value.trim();
+    user.dob = document.getElementById('profile-dob').value;
+    user.contact = document.getElementById('profile-contact').value.trim();
+    user.occupation = document.getElementById('profile-occupation').value;
+    
+    window.setItem('ff_user', user);
+    alert("👤 Profile saved!");
+    
+    const greetingEl = document.getElementById('home-greeting');
+    if (greetingEl) greetingEl.textContent = `Hello, ${user.name}!`;
+  };
+</script>
