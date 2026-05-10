@@ -1,0 +1,195 @@
+<style>
+  .dash-header {
+    margin-bottom: 48px;
+  }
+
+  .dash-header h1 {
+    font-size: 36px;
+    margin-bottom: 8px;
+  }
+
+  .dash-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin-bottom: 48px;
+  }
+
+  .dash-stat-card {
+    text-align: center;
+    border-top: 6px solid var(--color-border);
+  }
+
+  .dash-stat-card i {
+    font-size: 40px;
+    margin-bottom: 14px;
+  }
+
+  .dash-stat-val {
+    display: block;
+    font-family: 'Fredoka One', cursive;
+    font-size: 42px;
+    line-height: 1.1;
+    color: var(--color-text);
+  }
+
+  .dash-stat-lab {
+    color: var(--color-text-muted);
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .dash-goals-card {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin-bottom: 48px;
+  }
+
+  .dash-preview-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .dash-preview-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 24px;
+    background: var(--color-surface-2);
+    border-radius: 18px;
+    border: 2px solid var(--color-border);
+  }
+
+  @media (max-width: 1000px) {
+    .dash-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 600px) {
+    .dash-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<header class="dash-header">
+  <h1 id="dash-greeting" class="fredoka">Welcome Back! 👋</h1>
+  <p id="dash-date" style="color:var(--color-text-muted); font-weight:700;"></p>
+  <!-- NEW: Geolocation display -->
+  <p id="user-location" style="color:var(--color-text-muted); font-size:14px;"></p>
+</header>
+
+<div class="dash-grid">
+  <div class="dash-stat-card card" style="border-top-color: var(--color-secondary);">
+    <i class="ph ph-star-four float" style="color:var(--color-secondary);"></i>
+    <span class="dash-stat-val" id="dash-val-score">0</span>
+    <span class="dash-stat-lab">Total Points</span>
+  </div>
+  <div class="dash-stat-card card" style="border-top-color: var(--color-primary);">
+    <i class="ph ph-fire float" style="color:var(--color-primary); animation-delay:0.5s;"></i>
+    <span class="dash-stat-val" id="dash-val-streak">0</span>
+    <span class="dash-stat-lab">Day Streak</span>
+  </div>
+  <div class="dash-stat-card card" style="border-top-color: var(--color-accent);">
+    <i class="ph ph-check-circle float" style="color:var(--color-accent); animation-delay:1s;"></i>
+    <span class="dash-stat-val" id="dash-val-tasks">0</span>
+    <span class="dash-stat-lab">Tasks Today</span>
+  </div>
+  <div class="dash-stat-card card" style="border-top-color: var(--color-purple);">
+    <i class="ph ph-hourglass float" style="color:var(--color-purple); animation-delay:1.5s;"></i>
+    <span class="dash-stat-val" id="dash-val-time">0</span>
+    <span class="dash-stat-lab">Minutes Today</span>
+  </div>
+</div>
+
+<div class="dash-goals-card card">
+  <h3 class="fredoka">🎯 Today's Targets</h3>
+  <div>
+    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+      <span style="font-weight:700;">Focus Sessions</span>
+      <span id="dash-goal-sessions-txt">0 / 4</span>
+    </div>
+    <div class="goal-bar-track">
+      <div id="dash-goal-sessions-bar" class="goal-bar-fill" style="background:var(--color-purple); width:0%;"></div>
+    </div>
+  </div>
+  <div>
+    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+      <span style="font-weight:700;">Tasks Completed</span>
+      <span id="dash-goal-tasks-txt">0 / 5</span>
+    </div>
+    <div class="goal-bar-track">
+      <div id="dash-goal-tasks-bar" class="goal-bar-fill" style="background:var(--color-accent); width:0%;"></div>
+    </div>
+  </div>
+</div>
+
+<div class="dash-preview">
+  <h3 class="fredoka" style="margin-bottom:20px;">📋 Priority Tasks</h3>
+  <div id="dash-task-list" class="dash-preview-list"></div>
+</div>
+
+<script>
+  (function () {
+    async function refreshDashboard() {
+      const today = window.getTodayString();
+      const score = window.getItem('ff_score') || 0;
+      const streak = window.getItem('ff_streak') || 0;
+      const tasks = window.getItem('ff_tasks') || [];
+      const sessions = window.getItem('ff_sessions') || [];
+      const sessionGoal = window.getItem('ff_daily_goal_sessions') || 4;
+      const taskGoal = window.getItem('ff_daily_goal_tasks') || 5;
+
+      const todayTasks = tasks.filter(t => t.createdAt === today);
+      const doneTasksCount = todayTasks.filter(t => t.completed).length;
+      const todaySessionsCount = sessions.filter(s => s.date === today).length;
+      const todayMinutes = sessions.filter(s => s.date === today).reduce((acc, s) => acc + s.duration, 0);
+
+      const hrs = new Date().getHours();
+      const greeting = hrs < 12 ? "Good Morning" : (hrs < 18 ? "Good Afternoon" : "Good Evening");
+      document.getElementById('dash-greeting').textContent = `${greeting}, Champion! 👑`;
+      document.getElementById('dash-date').textContent = window.formatDate(today);
+
+      document.getElementById('dash-val-score').textContent = score;
+      document.getElementById('dash-val-streak').textContent = `${streak} days`;
+      document.getElementById('dash-val-tasks').textContent = doneTasksCount;
+      document.getElementById('dash-val-time').textContent = `${todayMinutes}m`;
+
+      document.getElementById('dash-goal-sessions-txt').textContent = `${todaySessionsCount} / ${sessionGoal}`;
+      document.getElementById('dash-goal-sessions-bar').style.width = Math.min(100, (todaySessionsCount / sessionGoal) * 100) + '%';
+      document.getElementById('dash-goal-tasks-txt').textContent = `${doneTasksCount} / ${taskGoal}`;
+      document.getElementById('dash-goal-tasks-bar').style.width = Math.min(100, (doneTasksCount / taskGoal) * 100) + '%';
+
+      // Task preview
+      const list = document.getElementById('dash-task-list');
+      const pending = tasks.filter(t => !t.completed).sort((a, b) => (b.priority === 'high' ? 1 : -1)).slice(0, 3);
+      if (pending.length === 0) {
+        list.innerHTML = `<p style="color:var(--color-text-muted);">All caught up! Time for a break? 🧘</p>`;
+      } else {
+        list.innerHTML = pending.map(t => `
+          <div class="dash-preview-item">
+            <span style="font-weight:700;">${t.text}</span>
+            <span class="badge badge-${t.priority}">+${t.points} pts</span>
+          </div>
+        `).join('');
+      }
+
+      // GEOLOCATION API (new)
+      if (window.geolocation && getCityFromCoords) {
+        navigator.geolocation.getCurrentPosition(async pos => {
+          const city = await getCityFromCoords(pos.coords.latitude, pos.coords.longitude);
+          document.getElementById('user-location').textContent = `📍 ${city}`;
+        }, () => {
+          document.getElementById('user-location').textContent = '📍 location unavailable';
+        });
+      }
+    }
+
+    const page = document.getElementById('page-dashboard');
+    if (page) page.addEventListener('pageActivated', refreshDashboard);
+    refreshDashboard();
+  })();
+</script>
