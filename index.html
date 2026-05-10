@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" id="meta-desc" content="FocusFlow – your joyful productivity companion.">
+    <meta name="keywords" id="meta-keywords" content="productivity, pomodoro, focus">
+    <meta property="og:title" content="FocusFlow">
+    <meta property="og:image" content="assets/backgrounds/forest.jpg">
+    <meta property="og:description" id="og-desc" content="Stay focused, stay ahead.">
+    <title id="page-title">FocusFlow – Home</title>
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>">
+
+    <script src="https://unpkg.com/phosphor-icons"></script>
+    <link rel="stylesheet" href="assets/css/global.css">
+</head>
+<body>
+    <script>
+        if (localStorage.getItem('ff_theme') === 'dark')
+            document.documentElement.classList.add('dark');
+    </script>
+
+    <header id="mobile-topbar">
+        <button id="hamburger-btn" aria-label="Open menu">☰</button>
+        <span class="logo-text">🎯 FocusFlow</span>
+    </header>
+    <div id="sidebar-backdrop"></div>
+
+    <aside id="sidebar">
+        <div class="sidebar-logo">
+            <span class="logo-icon">🎯</span>
+            <span class="logo-text">FocusFlow</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="#page-home" class="sidebar-btn active" data-page="page-home" onclick="showPage('page-home')">
+                <i class="ph ph-house btn-icon"></i>
+                <span class="btn-label">Home</span>
+            </a>
+            <a href="#page-dashboard" class="sidebar-btn" data-page="page-dashboard" onclick="showPage('page-dashboard')">
+                <i class="ph ph-chart-bar btn-icon"></i>
+                <span class="btn-label">Dashboard</span>
+            </a>
+            <a href="#page-tasks" class="sidebar-btn" data-page="page-tasks" onclick="showPage('page-tasks')">
+                <i class="ph ph-check-square btn-icon"></i>
+                <span class="btn-label">Tasks</span>
+            </a>
+            <a href="#page-focus" class="sidebar-btn" data-page="page-focus" onclick="showPage('page-focus')">
+                <i class="ph ph-timer btn-icon"></i>
+                <span class="btn-label">Focus Lab</span>
+            </a>
+            <a href="#page-progress" class="sidebar-btn" data-page="page-progress" onclick="showPage('page-progress')">
+                <i class="ph ph-trend-up btn-icon"></i>
+                <span class="btn-label">Progress</span>
+            </a>
+            <a href="#page-contact" class="sidebar-btn" data-page="page-contact" onclick="showPage('page-contact')">
+                <i class="ph ph-envelope btn-icon"></i>
+                <span class="btn-label">Contact</span>
+            </a>
+            <a href="#page-faq" class="sidebar-btn" data-page="page-faq" onclick="showPage('page-faq')">
+                <i class="ph ph-question btn-icon"></i>
+                <span class="btn-label">FAQ</span>
+            </a>
+            <a href="#page-about" class="sidebar-btn" data-page="page-about" onclick="showPage('page-about')">
+                <i class="ph ph-info btn-icon"></i>
+                <span class="btn-label">About</span>
+            </a>
+        </nav>
+
+        <div style="padding: 0 12px 16px; text-align:center;">
+            <div id="nav-streak-chip" style="font-family:'Nunito',sans-serif; font-size:14px; font-weight:800; background:rgba(255,107,107,0.15); border-radius:999px; padding:8px 12px; color:var(--color-primary); white-space:nowrap; overflow:hidden;">
+                🔥 <span id="nav-streak">0</span> day streak
+            </div>
+        </div>
+
+        <div class="sidebar-bottom">
+            <a href="#page-settings" class="sidebar-btn" data-page="page-settings" onclick="showPage('page-settings')">
+                <i class="ph ph-gear btn-icon" style="color:var(--color-text);"></i>
+                <span class="btn-label" style="color:var(--color-text);">Settings</span>
+            </a>
+            <button id="dark-mode-btn" onclick="toggleDarkMode()" aria-label="Toggle dark mode">
+                <i class="ph ph-moon btn-icon" id="dark-mode-icon"></i>
+                <span class="btn-label" id="dark-mode-label">Dark Mode</span>
+            </button>
+        </div>
+    </aside>
+
+    <main id="app">
+        <div id="page-loader" style="position:fixed; inset:0; background:var(--color-bg); display:flex; align-items:center; justify-content:center; z-index:1000;">
+            <div class="card" style="text-align: center;">
+                <span style="font-size:48px; display:block; margin-bottom:16px; animation: spin 1.5s linear infinite;">🎯</span>
+                <h2 class="fredoka">Loading FocusFlow...</h2>
+            </div>
+        </div>
+
+        
+        <section id="page-home" class="page"></section>
+        <section id="page-dashboard" class="page"></section>
+        <section id="page-tasks" class="page"></section>
+        <section id="page-focus" class="page"></section>
+        <section id="page-progress" class="page"></section>
+        <section id="page-settings" class="page"></section>
+        <section id="page-contact" class="page"></section>
+        <section id="page-faq" class="page"></section>
+        <section id="page-about" class="page"></section>
+    </main>
+
+    <footer style="text-align:center; padding:1rem; background:var(--color-surface); border-top:2px solid var(--color-border); margin-top:2rem;">
+        <p>Built with ☕ and focus · FocusFlow v2.0</p>
+    </footer>
+
+    <script>
+        window.FF_SHELL_LOADED = true; // Flag for sub-pages to detect shell
+        const PAGES = [
+            { id: 'page-about',      file: 'pages/about.html' },
+            { id: 'page-home',       file: 'pages/home.html' },
+            { id: 'page-dashboard',  file: 'pages/dashboard.html' },
+            { id: 'page-tasks',      file: 'pages/tasks.html' },
+            { id: 'page-focus',      file: 'pages/focus.html' },
+            { id: 'page-progress',   file: 'pages/progress.html' },
+            { id: 'page-settings',   file: 'pages/settings.html' },
+            { id: 'page-contact',    file: 'pages/contact.html' },
+            { id: 'page-faq',        file: 'pages/faq.html' },
+        ];
+
+        async function loadApp() {
+            const loader = document.getElementById('page-loader');
+            try {
+                const fetchPromises = PAGES.map(async (p) => {
+                    const response = await fetch(p.file);
+                    if (!response.ok) throw new Error(`Could not fetch ${p.file}`);
+                    const html = await response.text();
+                    const container = document.getElementById(p.id);
+                    container.innerHTML = html;
+                    container.querySelectorAll('script').forEach(oldScript => {
+                        const newScript = document.createElement('script');
+                        newScript.textContent = oldScript.textContent;
+                        oldScript.replaceWith(newScript);
+                    });
+                });
+
+                await Promise.all(fetchPromises);
+                loader.style.display = 'none';
+                initLogin();
+
+                const lastPage = localStorage.getItem('ff_current_page');
+if (lastPage) {
+    showPage(lastPage);
+}
+// if no last page, welcome screen remains
+
+                const isDark = document.documentElement.classList.contains('dark');
+                document.getElementById('dark-mode-icon').className = isDark ? 'ph ph-sun btn-icon' : 'ph ph-moon btn-icon';
+                document.getElementById('dark-mode-label').textContent = isDark ? 'Light Mode' : 'Dark Mode';
+            } catch (err) {
+                console.error(err);
+                loader.innerHTML = `<div class="card"><h2>⚠️ Oops!</h2><p>Files missing. Check /pages/ folder.</p><button onclick="location.reload()" class="btn-primary">Retry</button></div>`;
+            }
+        }
+
+
+        window.addEventListener('DOMContentLoaded', loadApp);
+    </script>
+
+    <script src="assets/js/global.js"></script>
+    
+<div id="welcome-overlay" style="
+    position: fixed; inset: 0; background: var(--color-bg); display: flex;
+    align-items: center; justify-content: center; z-index: 9999; padding: 16px;
+">
+    <div style="
+        background: var(--color-surface); border: 3px solid var(--color-border);
+        border-radius: 40px; padding: 36px 28px 28px; box-shadow: 12px 12px 0px var(--color-border);
+        text-align: center; max-width: 420px; width: 100%; position: relative;
+        animation: pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 1;
+    ">
+        <span style="position: absolute; top: -14px; left: -14px; font-size: 28px; color: var(--color-secondary);">●</span>
+        <span style="position: absolute; bottom: -14px; right: -14px; font-size: 28px; color: var(--color-accent);">●</span>
+
+        <span style="font-size: 56px; display: block; margin-bottom: 12px;">🎯</span>
+        <h1 class="fredoka" style="font-size: 2rem; margin: 0 0 8px;">Welcome to FocusFlow</h1>
+        <p style="color: var(--color-text-muted); margin-bottom: 20px; font-size: 0.95rem;">Your joyful productivity companion.</p>
+
+        <!-- Tab switcher -->
+        <div style="display: flex; gap: 4px; margin-bottom: 20px; background: var(--color-surface-2); border-radius: 12px; padding: 4px;">
+            <button id="tab-create" class="tab-btn active" onclick="switchTab('create')" style="flex:1; padding: 8px; border: none; border-radius: 10px; background: var(--color-primary); color: white; font-weight: 700; cursor: pointer;">New User</button>
+            <button id="tab-login" class="tab-btn" onclick="switchTab('login')" style="flex:1; padding: 8px; border: none; border-radius: 10px; background: transparent; color: var(--color-text-muted); font-weight: 700; cursor: pointer;">Log In</button>
+        </div>
+
+        <!-- NEW USER FORM (Name + Login ID only) -->
+        <div id="form-create">
+            <div style="display: flex; flex-direction: column; gap: 10px; text-align: left;">
+                <div>
+                    <label for="login-name" style="font-weight: 700; font-size: 0.85rem;">Your Name *</label>
+                    <input type="text" id="login-name" placeholder="What should we call you?" required>
+                </div>
+                <div>
+                    <label for="login-username" style="font-weight: 700; font-size: 0.85rem;">Login ID *</label>
+                    <input type="text" id="login-username" placeholder="Pick a unique username" required>
+                </div>
+                <button class="btn-primary" onclick="createAccount()" style="justify-content: center; margin-top: 4px;">
+                    🚀 Create Account & Start
+                </button>
+            </div>
+        </div>
+
+        <!-- LOGIN FORM (Login ID only) -->
+        <div id="form-login" style="display: none;">
+            <div style="display: flex; flex-direction: column; gap: 10px; text-align: left;">
+                <div>
+                    <label for="login-username-existing" style="font-weight: 700; font-size: 0.85rem;">Login ID *</label>
+                    <input type="text" id="login-username-existing" placeholder="Your username" required>
+                </div>
+                <button class="btn-primary" onclick="loginUser()" style="justify-content: center; margin-top: 4px;">
+                    🔓 Log In
+                </button>
+            </div>
+        </div>
+
+        <!-- WELCOME BACK (after successful login) -->
+        <div id="welcome-back-area" style="display: none;">
+            <h2 class="fredoka" style="font-size: 1.8rem; margin: 12px 0;">Welcome back, <span id="welcome-name"></span>!</h2>
+            <p style="color: var(--color-text-muted); margin-bottom: 16px;">Ready to stay focused today?</p>
+            <button class="btn-primary" onclick="enterApp()" style="justify-content: center; width: 100%;">
+                ▶ Enter FocusFlow
+            </button>
+            <button class="btn-ghost" onclick="logoutUser()" style="margin-top: 8px; font-size: 0.9rem;">↪ Not you? Log out</button>
+        </div>
+    </div>
+</div>
+<script>
+   // ── Tab switching ──
+window.switchTab = function(tab) {
+  const createTab = document.getElementById('tab-create');
+  const loginTab = document.getElementById('tab-login');
+  createTab.style.background = (tab === 'create') ? 'var(--color-primary)' : 'transparent';
+  createTab.style.color = (tab === 'create') ? 'white' : 'var(--color-text-muted)';
+  loginTab.style.background = (tab === 'login') ? 'var(--color-primary)' : 'transparent';
+  loginTab.style.color = (tab === 'login') ? 'white' : 'var(--color-text-muted)';
+  document.getElementById('form-create').style.display = (tab === 'create') ? 'block' : 'none';
+  document.getElementById('form-login').style.display = (tab === 'login') ? 'block' : 'none';
+};
+
+// ── MULTI‑USER HELPERS ──
+function getUsers() { return getItem('ff_users') || []; }
+function saveUsers(users) { setItem('ff_users', users); }
+function getActiveUser() { return getItem('ff_active_user'); }
+function setActiveUser(user) { setItem('ff_active_user', user); }
+
+// ── Create Account (checks if Login ID already exists) ──
+window.createAccount = function() {
+  const name = document.getElementById('login-name').value.trim();
+  const username = document.getElementById('login-username').value.trim();
+
+  if (!name || !username) {
+    alert('Please fill in both fields.');
+    return;
+  }
+
+  const users = getUsers();
+
+  // Check if this Login ID is already taken
+  if (users.some(u => u.username === username)) {
+    alert('This Login ID is already taken. Please choose another one.');
+    return;
+  }
+
+  // Create new user and save
+  const newUser = { name, username, dob: '', contact: '', occupation: 'student' };
+  users.push(newUser);
+  saveUsers(users);
+  setActiveUser(newUser);
+
+  // Show welcome back screen for the new user
+  showWelcomeBack(newUser.name);
+};
+
+// ── Log In (looks up Login ID in the user list) ──
+window.loginUser = function() {
+  const username = document.getElementById('login-username-existing').value.trim();
+  if (!username) {
+    alert('Please enter your Login ID.');
+    return;
+  }
+
+  const users = getUsers();
+  if (users.length === 0) {
+    alert('No accounts found. Please create one first.');
+    switchTab('create');
+    return;
+  }
+
+  const foundUser = users.find(u => u.username === username);
+  if (!foundUser) {
+    alert('Login ID not found.');
+    return;
+  }
+
+  setActiveUser(foundUser);
+  showWelcomeBack(foundUser.name);
+};
+
+// ── Show welcome back area (after creation or login) ──
+function showWelcomeBack(name) {
+  document.getElementById('form-create').style.display = 'none';
+  document.getElementById('form-login').style.display = 'none';
+  document.getElementById('tab-create').style.display = 'none';
+  document.getElementById('tab-login').style.display = 'none';
+  document.getElementById('welcome-back-area').style.display = 'block';
+  document.getElementById('welcome-name').textContent = name;
+}
+
+// ── Enter FocusFlow ──
+window.enterApp = function() {
+  document.getElementById('welcome-overlay').style.display = 'none';
+  showPage('page-home');
+  const user = getActiveUser();
+  if (user) {
+    const greetingEl = document.getElementById('home-greeting');
+    if (greetingEl) greetingEl.textContent = `Hello, ${user.name}!`;
+  }
+};
+
+// ── Log Out ──
+window.logoutUser = function() {
+  if (confirm('Log out? You will be returned to the user selection screen.')) {
+    localStorage.removeItem('ff_active_user');
+    location.reload();
+  }
+};
+
+// ── Init on page load ──
+function initLogin() {
+  const user = getActiveUser();
+  if (user) {
+    // A user is already logged in – skip tabs and show welcome back
+    document.getElementById('form-create').style.display = 'none';
+    document.getElementById('form-login').style.display = 'none';
+    document.getElementById('tab-create').style.display = 'none';
+    document.getElementById('tab-login').style.display = 'none';
+    document.getElementById('welcome-back-area').style.display = 'block';
+    document.getElementById('welcome-name').textContent = user.name;
+  } else {
+    // No active user – show the tabs as usual
+    switchTab('create');
+  }
+}
+</script>
+</body>
+</html>
